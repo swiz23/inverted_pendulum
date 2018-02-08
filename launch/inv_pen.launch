@@ -1,0 +1,6 @@
+<launch>
+
+    <node pkg="intera_interface" type="enable_robot.py" name="enable_robot" args="-e" />
+    <node name="controller" pkg="inverted_pendulum" type="controller.py">  </node>
+    <node name="ik_horizontal" pkg="inverted_pendulum" type="ik_horizontal.py">  </node>
+</launch>
