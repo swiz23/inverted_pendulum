@@ -17,6 +17,7 @@ class IKhorizontal(object):
 
     def __init__(self):
         self.angles = [0,0,pi/2,-pi/2,pi/2,pi/2,0]
+        self.vely = 0
         self.ik_begin = False
         self.goal = mr.FKinBody(smr.M,smr.Blist,self.angles)
         self.goal[0:3,0:3] = np.eye(3)
@@ -33,26 +34,28 @@ class IKhorizontal(object):
         self.mutex = threading.Lock()
         self.yp = rospy.Subscriber("yPoint", Point, self.Pnt)
         self.jss = rospy.Subscriber("/robot/joint_states", JointState,self.get_js)
-        self.tim = rospy.Timer(rospy.Duration(1/100.), self.step_ik)
+        self.tim = rospy.Timer(rospy.Duration(1/1000.), self.step_ik)
         self.key = rospy.Timer(rospy.Duration(1/10.), self.key_press)
 
     def Pnt(self,points):
         # self.goal[2,3] = points.x
-        self.goal[1,3] = points.y
-
+        # self.goal[1,3] = points.x
+        self.vely = points.y
     def get_js(self,joint_st):
         self.js = joint_st.position[1:-1]
         # self.vel = joint_st.velocity[1:-1]
 
     def key_press(self,td):
         key = raw_input()
-        if (key == "s"):
-            # self.zero_time = rospy.get_time()
-            self.ik_begin = True
+        if (key == ""):
+            if (self.ik_begin == False):
+                self.ik_begin = True
+            else:
+                self.ik_begin = False
+                self.limb.move_to_joint_positions(self.start_angles)
+        # elif (key == "r"):
+        #     self.ik_begin = False
 
-        elif (key == "r"):
-            self.ik_begin = False
-            self.limb.move_to_joint_positions(self.start_angles)
             # velocity_list = np.array(self.vellist)
             # veltime = np.array(self.veltime)
             # plt.plot(range(0,velocity_list.shape[0]),velocity_list[:,0],label='wx')
@@ -81,6 +84,7 @@ class IKhorizontal(object):
             err = np.dot(mr.TransInv(mr.FKinBody(smr.M, smr.Blist, current_js)), g_sd)
             # now convert this to a desired twist
             Vb = mr.se3ToVec(mr.MatrixLog6(err))
+            Vb[4] = self.vely
             # calculate body Jacobian at current config
             J_b = mr.JacobianBody(smr.Blist, current_js)
             # now calculate an appropriate joint angle velocity:
