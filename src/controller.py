@@ -10,6 +10,7 @@ class pen_controller(object):
     def __init__(self):
         rospy.loginfo("Creating pendulum controller class")
         self.ystate = rospy.Publisher("yPoint",Point, queue_size=3)
+        self.adjustedAngle = rospy.Publisher("newAngle",Float32, queue_size=3)
         self.rolla = rospy.Subscriber("rollAngle",Float32,self.angle)
         self.roll_vel = rospy.Subscriber("ang_vel",Int16,self.speed)
         self.cur_status = rospy.Subscriber("reset_control",String,self.reset)
@@ -22,12 +23,7 @@ class pen_controller(object):
         self.vel_limit = 1
         self.dt = 0.01
         self.xfinal = -.2075
-        # self.xaccel = rospy.Subscriber("xAccel",Int16,self.ax)
-        # self.yaccel = rospy.Subscriber("yAccel",Int16,self.ay)
-        # self.zaccel = rospy.Subscriber("zAccel",Int16,self.az)
-        # self.xa = 0
-        # self.ya = 0
-        # self.za = 10
+
         self.av = 0
         self.roll = 0
         self.int_timer = rospy.Timer(rospy.Duration(1/100.), self.yPublish)
@@ -46,12 +42,7 @@ class pen_controller(object):
         if (self.command_vel < -self.vel_limit):
             self.command_vel = -self.vel_limit
         rospy.loginfo(self.command_vel)
-        # if (abs(self.command_vel - self.xdot) > .1):
-        #     self.command_vel = self.command_vel/2
-        # self.xfinal =self.xfinal + self.command_vel*self.dt
-        # rospy.loginfo(self.command_vel)
-        # if (self.xa is not None and self.ya is not None and self.za is not None):
-        #     roll = atan(sqrt(self.xa**2+self.ya**2)/self.za)*180/pi
+
         if (self.roll > 8 or self.roll < -8):
             self.command_vel = 0
 
@@ -68,19 +59,7 @@ class pen_controller(object):
             average = average + (self.roll-self.prevroll)/.01
             i = i + 1
         self.av = average/10
-
-        # rospy.loginfo(self.av*pi/180)
-    # def ax(self,ax_data):
-    #     self.xa = ax_data.data
-    #     # rospy.loginfo(yacceleration)
-    #
-    # def ay(self,ay_data):
-    #     self.ya = ay_data.data
-    #     # rospy.loginfo(yacceleration)
-    #
-    # def az(self,az_data):
-    #     self.za = az_data.data
-    #     # rospy.loginfo(yacceleration)
+        self.adjustedAngle.publish(self.roll)
 
     def speed(self,ang_velocity):
         # self.av = ang_velocity.data;
