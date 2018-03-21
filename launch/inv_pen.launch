@@ -5,6 +5,7 @@
     <node name="controller" pkg="inverted_pendulum" type="controller.py">  </node>
     <node name="ik_horizontal" pkg="inverted_pendulum" type="ik_horizontal.py">  </node>
     <node name="pen_sim" pkg="inverted_pendulum" type="pen_marker.py"/>
+    <node name="rollAng" pkg="inverted_pendulum" type="rollAngle.py"/>
     <group if="$(arg vis)">
     <node pkg="rviz" type="rviz" respawn="false" name="rviz"
 	  args="-d $(find inverted_pendulum)/config/real_invpen.rviz" />

@@ -7,6 +7,7 @@ Panels:
         - /Global Options1
         - /Status1
         - /TF1
+        - /TF1/Frames1
       Splitter Ratio: 0.5
     Tree Height: 565
   - Class: rviz/Selection
@@ -257,7 +258,7 @@ Visualization Manager:
         right_arm_itb:
           Value: false
         right_hand:
-          Value: false
+          Value: true
         right_hand_camera:
           Value: false
         right_l0:
@@ -279,7 +280,7 @@ Visualization Manager:
         right_l5:
           Value: false
         right_l6:
-          Value: true
+          Value: false
         right_torso_itb:
           Value: false
         right_wrist:
@@ -436,5 +437,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 65
-  Y: 60
+  X: 143
+  Y: 206
