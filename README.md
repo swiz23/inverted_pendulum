@@ -6,7 +6,7 @@ Created by Solomon Wiznitzer for the Master of Science in Robotics program at No
 
 **Objective:** To balance an inverted pendulum along a straight line using Sawyer, a robot by [Rethink Robotics](http://www.rethinkrobotics.com).
 
-**How It Works:** There were four parts to this project. 
+**How It Works:** There were four parts to this project.
 1. Determining how to move Sawyer's seven degree-of-freedom arm such that the end effector followed a straight line path (inverse kinematics)
 2. To become familiar with the [CoreUSB](http://wiki.microduinoinc.com/Microduino-Module_CoreUSB), [Motion Sensor](http://wiki.microduinoinc.com/Microduino-Module_Motion), and [Battery Management](http://wiki.microduinoinc.com/Microduino-Module_BM_Li-ion) Microduino modules along with the [BlueSmirf](https://learn.sparkfun.com/tutorials/using-the-bluesmirf) Bluetooth unit such that roll-angle data could be transmitted wirelessly from the top of the pendulum to a laptop.
 3. Developing the control algorithm to move Sawyer's end effector and balance the pendulum stably. This involved creating a Mathematica simulation, and using a linearized form of the equations of motion to build a state space model of the system. The model was then used to develop an LQR controller in MATLAB.
@@ -22,14 +22,14 @@ Created by Solomon Wiznitzer for the Master of Science in Robotics program at No
 *Sawyer Inverted Pendulum Demo: On left, an Rviz video showing the location of the pendulum tip as it moves in real time. On right, the actual real time footage*
 
 ##### [Scripts](src/Python%20Files)
-* The [controller.py](src/Python%20Files/controller.py) script launches the node 'controller' that subscribes to the `/rollAngle` topic to collect data as to where the top of the pendulum is (from which angular velocity data is calculated), the `/robot/limb/right/endpoint_state` topic to determine Sawyer's end effector position and velocity, and the `/reset_control` topic which clears the control output to 0 m/s before any demos start. The node calculates the necessary velocity to keep the pendulum balanced using an LQR controller from the four states (end effector position, end effector velocity, pendulum angle, pendulum angular velocity), and publishes the output to the `/yPoint` topic. It also publishes slightly modified rollAngle data based on where the actual 'zero-point' of unstable equilibrium is to the `/newAngle` topic. 
-* The [ik_horizontal.py](src/Python%20Files/ik_horizontal.py) script launches the node 'ik_horizontal' that subscribes to the `/yPoint` topic mentioned above which inputs the command velocity to the 'x' part of the end-effector twist, along with the `/robot/joint_states` topic which is used to calculate the Jacobian at any given joint configuration. The node waits for the user to press the 'Enter' key at which point it publishes a 'reset' command to the `/reset_control` topic and starts moving the robot arm along the  base frame's 'y-axis'. 
+* The [controller.py](src/Python%20Files/controller.py) script launches the node 'controller' that subscribes to the `/rollAngle` topic to collect data as to where the top of the pendulum is (from which angular velocity data is calculated), the `/robot/limb/right/endpoint_state` topic to determine Sawyer's end effector position and velocity, and the `/reset_control` topic which clears the control output to 0 m/s before any demos start. The node calculates the necessary velocity to keep the pendulum balanced using an LQR controller from the four states (end effector position, end effector velocity, pendulum angle, pendulum angular velocity), and publishes the output to the `/yPoint` topic. It also publishes slightly modified rollAngle data based on where the actual 'zero-point' of unstable equilibrium is to the `/newAngle` topic.
+* The [ik_horizontal.py](src/Python%20Files/ik_horizontal.py) script launches the node 'ik_horizontal' that subscribes to the `/yPoint` topic mentioned above which inputs the command velocity to the 'x' part of the end-effector twist, along with the `/robot/joint_states` topic which is used to calculate the Jacobian at any given joint configuration. The node waits for the user to press the 'Enter' key at which point it publishes a 'reset' command to the `/reset_control` topic and starts moving the robot arm along the  base frame's 'y-axis'.
 * The [rollAngle.py](src/Python%20Files/rollAngle.py) script launches the node 'rollAng' that listens to the `/dev/rfcomm0` serial port (which the bluetooth module is transmitting to) and publishes roll angle data to the `/rollAngle` topic.
-* The [pen_marker.py](src/Python%20Files/pen_marker.py) script launches the node 'pen_sim' that subscribes to the `/newAngle` topic. It then publishes the current position of the pendulum with respect to Sawyer's end effector as a marker message (a red sphere) to the `/visualization_marker` topic. 
+* The [pen_marker.py](src/Python%20Files/pen_marker.py) script launches the node 'pen_sim' that subscribes to the `/newAngle` topic. It then publishes the current position of the pendulum with respect to Sawyer's end effector as a marker message (a red sphere) to the `/visualization_marker` topic.
 
 ##### Topics
 
-* `/yPoint`: Publishes Sawyer's current end effector velocity relative to the end effector frame, the command velocity from the output of the controller, and Sawyer's current end effector position relative to the base frame 
+* `/yPoint`: Publishes Sawyer's current end effector velocity relative to the end effector frame, the command velocity from the output of the controller, and Sawyer's current end effector position relative to the base frame
 
 * `/rollAngle`:Publishes the raw angle of pendulum tilt in degrees where 0 corresponds to the unstable equilibrium point
 
@@ -51,14 +51,14 @@ Created by Solomon Wiznitzer for the Master of Science in Robotics program at No
 * *EndpointState*: Part of 'intera_core_msgs' that is used in the `/robot/limb/right/endpoint_state` topic
 * *JointState*: Part of 'sensor_msgs' that is used in the `/robot/joint_states` topic to hold angle data
 * *Marker*: Part of 'visualization_msgs' used in the `/visualization_marker` topic
-* *TransformStamped*: Part of 'geometry_msgs' and is used in finding the transform of Sawyer's right hand with respect to the base 
+* *TransformStamped*: Part of 'geometry_msgs' and is used in finding the transform of Sawyer's right hand with respect to the base
 
-##### Launch File
+##### [Launch File](/launch)
 
 * [inv_pen.launch](launch/inv_pen.launch): The launch file will enable the robot and start the four nodes mentioned above. It will also launch Rviz with the Sawyer robot model, the TF transforms of the base and right hand frames, and the marker depicting the pendulum tip.
 
 
-##### Microduino Code
+##### [Microduino Code](/src/Microduino%20Code)
 
 * [btConfig.ino](src/Microduino%20Code/btConfig/btConfig.ino): This script was used to configure the Bluetooth module to have a 9600 baud rate via USB. This can also be done without the script wirelessly over Bluetooth.
 * [MPU6050_DMP6_NOINT_serial.ino](src/Microduino%20Code/btConfig/MPU6050_DMP_NOINT_serial.ino): This script was based on Jeff Rowberg's code but modified to work with the Microduino. It sends the roll angle data from the Motion Sensor module via Serial1 to the Bluetooth module. The Bluetooth module then transmits it wirelessly to the virtual serial port `/dev/rfcomm0`.
