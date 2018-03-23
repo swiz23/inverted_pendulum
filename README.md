@@ -14,6 +14,7 @@ Created by Solomon Wiznitzer for the Master of Science in Robotics program at No
 
 **Software Requirements:** Needs ROS, Pyserial, the intera_sdk, the [modern_robotics](https://github.com/NxRLab/ModernRobotics) library, and an Arduino IDE
 
-**Hardware Requirements:** Needs the [Sawyer]((http://www.rethinkrobotics.com) robot,
+**Hardware Requirements:** Needs the [Sawyer](http://www.rethinkrobotics.com) robot, the Microduino and Bluetooth modules mentioned above, a small lithium ion battery (100 - 500 mAh), access to a 3D printer, some wires, screws, and a meter long 1/2 inch wooden dowel
 
-**Get Started:** To run, clone the repo, and type `roslaunch ball_tracker ball_tracker.launch` in the terminal window.
+**Get Started:** To run, clone the repo, and type `roslaunch inverted_pendulum inv_pen.launch` in the terminal window. Before that step, make sure to connect the Bluetooth module with a laptop by typing `sudo rfcomm bind rfcomm0 [MAC address of Bluetooth module]`. The baud rate of the Bluetooth module should be set to 9600 as well.
+[![sawyer_pic](/media/Pictures/vidPic.png)](https://drive.google.com/open?id=1FXJXsdRcDxJXS-Kua1aB4rFsKBY5Y83M)
