@@ -20,7 +20,7 @@ void setup()
 {
   Serial.begin(9600);  // Begin the serial monitor at 9600bps
 
-  bluetooth.begin(57600);  // The Bluetooth Mate defaults to 115200bps
+  bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
   bluetooth.print("$");  // Print three times individually
   bluetooth.print("$");
   bluetooth.print("$");  // Enter command mode
