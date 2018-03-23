@@ -4,7 +4,6 @@ import tf2_ros
 import random
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import TransformStamped
-from sensor_msgs.msg import JointState
 from std_msgs.msg import Header, Float32
 from math import pi,sin,cos
 
@@ -16,7 +15,6 @@ class pen_tracer(object):
         self.marker_msg = Marker()
         self.tfBuffer = tf2_ros.Buffer()
         self.listener = tf2_ros.TransformListener(self.tfBuffer)
-        self.controller_rate = 0.
         self.rospy_rate = 10
         self.rate = rospy.Rate(self.rospy_rate)
         self.zero_time = rospy.get_time()
@@ -25,8 +23,7 @@ class pen_tracer(object):
     def tracer(self,angle):
         try:
             trans = self.tfBuffer.lookup_transform('base', 'right_hand', rospy.Time(0))
-            # t = rospy.get_time() - zero_time
-    # marker x,y,z positions determined from base frame
+            # marker x,y,z positions determined from base frame
             self.marker_msg.id = self.count
             self.marker_msg.header.stamp = trans.header.stamp
             self.marker_msg.pose.position.x = trans.transform.translation.x
@@ -52,7 +49,7 @@ class pen_tracer(object):
 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             self.rate.sleep()
-            # rate.sleep()
+
 def main():
     rospy.init_node('pen_sim')
 

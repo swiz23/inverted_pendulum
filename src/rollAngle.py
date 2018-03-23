@@ -2,7 +2,6 @@
 import serial
 import rospy
 from std_msgs.msg import Float32
-import time
 
 ser = serial.Serial('/dev/rfcomm0',9600)
 

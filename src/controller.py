@@ -5,12 +5,14 @@ from math import cos,sin,atan,sqrt,pi
 import time
 from geometry_msgs.msg import Point
 from intera_core_msgs.msg import EndpointState
+
 class pen_controller(object):
 
     def __init__(self):
         rospy.loginfo("Creating pendulum controller class")
         self.ystate = rospy.Publisher("yPoint",Point, queue_size=3)
-        self.adjustedAngle = rospy.Publisher("newAngle",Float32, queue_size=3)
+        # self.adjustedAngle = rospy.Publisher("newAngle",Float32, queue_size=3)
+        # self.anglePub = rospy.Publisher("angVel",Float32,queue_size=3)
         self.rolla = rospy.Subscriber("rollAngle",Float32,self.angle)
         self.roll_vel = rospy.Subscriber("ang_vel",Int16,self.speed)
         self.cur_status = rospy.Subscriber("reset_control",String,self.reset)
@@ -22,8 +24,6 @@ class pen_controller(object):
         self.command_vel = 0
         self.vel_limit = 1
         self.dt = 0.01
-        self.xfinal = -.2075
-
         self.av = 0
         self.roll = 0
         self.int_timer = rospy.Timer(rospy.Duration(1/100.), self.yPublish)
@@ -35,7 +35,6 @@ class pen_controller(object):
 
     def yPublish(self,tdat):
         a =.5477*(self.xPos-self.xbegin)+1.5090*self.xdot + 30.1922*self.roll*(pi/180) + 8.3422*self.av*(pi/180)
-        # y = .5*cos(rospy.get_time())
         self.command_vel = self.command_vel + a*self.dt
         if (self.command_vel > self.vel_limit):
             self.command_vel = self.vel_limit
@@ -47,7 +46,6 @@ class pen_controller(object):
             self.command_vel = 0
 
         self.ystate.publish(self.xdot,self.command_vel,self.xPos)
-        # self.ystate.publish(0,y,0)
 
     def angle(self,rollAngle):
         self.prevroll = self.roll
@@ -59,15 +57,15 @@ class pen_controller(object):
             average = average + (self.roll-self.prevroll)/.01
             i = i + 1
         self.av = average/10
-        self.adjustedAngle.publish(self.roll)
+        # self.adjustedAngle.publish(self.roll)
+        # self.anglePub.publish(self.av)
 
     def speed(self,ang_velocity):
-        # self.av = ang_velocity.data;
+        # plan is to get the gyroscope data straight from the Microduino at a later date
         i = 0
     def cart_states(self,x_states):
         self.xPos = x_states.pose.position.y # wrt base frame
-        self.xdot = x_states.twist.linear.x # wrt end effector?
-        # rospy.loginfo(self.xPos)
+        self.xdot = x_states.twist.linear.x # wrt end effector
 
 def main():
     rospy.init_node('controller')
