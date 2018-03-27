@@ -18,7 +18,7 @@ Created by Solomon Wiznitzer for the Master of Science in Robotics program at No
 
 **Get Started:** To run, clone the repo, and type `roslaunch inverted_pendulum inv_pen.launch` in the terminal window. Before that step, make sure to connect the Bluetooth module with a laptop by typing `sudo rfcomm bind rfcomm0 [MAC address of Bluetooth module]`. The baud rate of the Bluetooth module should be set to 9600 as well.
 
-[![sawyer_pic](/media/Pictures/vidPic.png)](https://drive.google.com/open?id=1FXJXsdRcDxJXS-Kua1aB4rFsKBY5Y83M)
+[![sawyer_pic](/media/Pictures/vidPic.png)](https://drive.google.com/open?id=1u6PP49m8NFsgJmSYvoRbcGQjhWkgp87x)
 *Sawyer Inverted Pendulum Demo: On left, an Rviz video showing the location of the pendulum tip as it moves in real time. On right, the actual real time footage*
 
 ##### [Scripts](src/Python%20Files)
